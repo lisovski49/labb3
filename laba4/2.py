@@ -1,4 +1,4 @@
-class Room
+class Room:
     def __init__(self, length, width, height):
         self.length= length
         self.width= width
@@ -22,15 +22,30 @@ class WallpaperCalculator:
         total_wall_area=2*wall_area-total_openings_area
         return total_wall_area
 
-length=float(input("Введите длину комнаты в метрах: "))
-width=float(input("Введите ширину комнаты в метрах:"))
-height=float(input("Введите высоту комнаты в метрах:"))
+def get_float_input(prompt):
+    while True:
+        try:
+            value = float(input(prompt))
+            if value > 0:
+                return value
+            else:
+                print("Ошибка: Введите положительное числовое значение.")
+        except ValueError:
+            print("Ошибка: Введите числовое значение.")
+while True:
+    length=get_float_input("Введите длину комнаты в метрах: ")
+    width=get_float_input("Введите ширину комнаты в метрах:")
+    height=get_float_input("Введите высоту комнаты в метрах:")
 
-window_area = float(input("Введите общую площадь окон в комнате: "))
-door_area = float(input("Введите общую площадь дверей в комнате: "))
-
-room=Room(length,width,height)
-calculator=WallpaperCalculator(room,window_area,door_area)
-total_area=calculator.calculate_total_wall_area()
-
-print("Общая площадь стены комнаты:", total_area, "квадратных метров")
+    window_area = get_float_input("Введите общую площадь окон в комнате: ")
+    door_area = get_float_input("Введите общую площадь дверей в комнате: ")
+    room=Room(length,width,height)
+    calculator=WallpaperCalculator(room,window_area,door_area)
+    total_area=calculator.calculate_total_wall_area()
+    if total_area>0:
+      print("Общая площадь стены комнаты:", total_area, "квадратных метров")
+    else:
+      print("Ошибка: Получено отрицательное значение.")
+    choice = input("Хотите ли вы продолжить? (Введите 'да' или 'нет'): ")
+    if choice.lower() != "да":
+        break
