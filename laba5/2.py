@@ -1,31 +1,27 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
+df = pd.read_csv('test.csv')
+df = df.head(1000)
+missing_values = df.isnull().sum()
+plt.boxplot(df['DistrictId'].apply(np.log))
+plt.xlabel('Cnjk,tw')
+plt.ylabel('Значения (логарифмическая шкала)')
+plt.title('Ящик с усами')
+plt.show()
 
+plt.hist(df['DistrictId'].apply(np.log))
+plt.xlabel('Столбец')
+plt.ylabel('Частота')
+plt.title('Гистограмма')
+plt.show()
 
-dataset =pd.read_csv("test.csv")
-sample= dataset.sample(n=1000)
-
-missing_values =sample.isnull().sum()
-print("Пропущенные значения")
-print(missing_values)
-
-for column in sample.select_dtypes(include=np.number):
-    plt.figure(figsize=(8,4))
-    plt.subplot(1,2,1)
-    sample.boxplot(column=column,vert=False)
-    plt.subplot(1,2,2)
-    np.log1p(sample[column]).hist()
-    plt.xlabel(column)
-    plt.show()
-
-sample=sample.fillna(sample.mean())
-room_counts=sample['Количество комнат'].value_counts()
-print("Количество комнат:")
-print(room_counts)
-pivot_table=pd.pivot_table(sample,index='район',columns='Количество комнат',aggfunc='size',fill_value=0)
-print("Сводная таблица:")
-print(pivot_table)
-
-sample.to_csv("surname.csv",index=False)
-print("Файл 'surname.csv' сохранен.")
+df['DistrictId'].fillna(df['DistrictId'].mean(), inplace=True)
+Q1 = df['DistrictId'].quantile(0.25)
+Q3 = df['DistrictId'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[(df['DistrictId'] >= (Q1 - 1.5 * IQR)) & (df['DistrictId'] <= (Q3 + 1.5 * IQR))]
+df = df[np.abs(df['DistrictId'] - df['DistrictId'].mean()) <= 3 * df['DistrictId'].std()]
+room_counts = df['DistrictId'].value_counts()
+pivot_table = pd.pivot_table(df, values='количество', index='районы', columns='комнаты', aggfunc=len)
+df.to_csv('surname.csv', index=False)
