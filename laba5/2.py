@@ -1,27 +1,42 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
-df = pd.read_csv('test.csv')
-df = df.head(1000)
-missing_values = df.isnull().sum()
-plt.boxplot(df['DistrictId'].apply(np.log))
-plt.xlabel('Cnjk,tw')
-plt.ylabel('Значения (логарифмическая шкала)')
-plt.title('Ящик с усами')
+
+# 1. Импортировать датасет.
+data = pd.read_csv('price_prepared.csv')
+
+# 2. Взять 1000 значений из выбранного датасета.
+data = data.sample(n=1000, random_state=42)
+
+# 3. Проверить данные на пропуски.
+missing_values = data.isnull().sum()
+print(f'Пропуски в данных:')
+print(missing_values)
+
+# 4. Проверить на нормальность распределения и выбросы с помощью боксплотов и гистограмм
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+data['Square'].plot(kind='box', logy=True)
+plt.title('Боксплот (логарифмическая шкала)')
+
+plt.subplot(1, 2, 2)
+data['Square'].plot(kind='hist', bins=30, logy=True)
+plt.title('Гистограмма (логарифмическая шкала)')
 plt.show()
 
-plt.hist(df['DistrictId'].apply(np.log))
-plt.xlabel('Столбец')
-plt.ylabel('Частота')
-plt.title('Гистограмма')
-plt.show()
+# 5. Заполнить пропуски и обработать аномальные значения.
+numeric_columns = ['Square', 'LifeSquare', 'KitchenSquare', 'Healthcare_1']
+data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
+data = data[(data['Square'] > 20) & (data['Square'] < 200)]
 
-df['DistrictId'].fillna(df['DistrictId'].mean(), inplace=True)
-Q1 = df['DistrictId'].quantile(0.25)
-Q3 = df['DistrictId'].quantile(0.75)
-IQR = Q3 - Q1
-df = df[(df['DistrictId'] >= (Q1 - 1.5 * IQR)) & (df['DistrictId'] <= (Q3 + 1.5 * IQR))]
-df = df[np.abs(df['DistrictId'] - df['DistrictId'].mean()) <= 3 * df['DistrictId'].std()]
-room_counts = df['DistrictId'].value_counts()
-pivot_table = pd.pivot_table(df, values='количество', index='районы', columns='комнаты', aggfunc=len)
-df.to_csv('surname.csv', index=False)
+# 6. Определить сколько в выборке 1, 2, 3 комнатных квартир.
+room_counts = data['Rooms'].value_counts()
+print('Количество квартир по количеству комнат:')
+print(room_counts)
+
+# 7. Построить сводную таблицу.
+pivot_table = data.pivot_table(index='DistrictId', columns='Rooms', values='Id', aggfunc='count')
+print("Сводная таблица:")
+print(pivot_table)
+
+# 8. Сохранить обработанный массив без выбросов и пропусков в файл "surname.csv".
+data.to_csv("surname.csv", index=False)
