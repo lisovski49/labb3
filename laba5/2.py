@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
 # 1. Импортировать датасет.
 data = pd.read_csv('price_prepared.csv')
 
