@@ -5,6 +5,8 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 
+
+
 class QuizWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -93,7 +95,7 @@ class QuizWindow(QWidget):
                 ("У человека 5 пальцев на руке?", "True"),
                 ("В високосном году 365 дней?", "False"),
                 ("Кит это млекопитающее?", "True"),
-                ("У человека 33 зуба?", "False")
+                ("У человека 32 зуба?", "False")
             ]
 
             cursor.executemany("INSERT INTO questions (question, answer) VALUES (?, ?)", questions)
