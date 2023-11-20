@@ -117,6 +117,7 @@ class QuizWindow(QWidget):
             QMessageBox.information(self, "Правильно!", "Ответ верный!")
             self.correct_answers += 1
         else:
+
             QMessageBox.information(self, "Неправильно!", "Ответ неверный!")
 
         self.current_question += 1
