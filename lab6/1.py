@@ -10,7 +10,7 @@ class QuizWindow(QWidget):
         super().__init__()
         self.setWindowTitle("Квиз")
         self.setGeometry(100, 100, 800, 600)
-        self.set_background_image("sea.jpg.webp")
+        self.set_background_image("fon.avif")
         self.set_stylesheet()
 
         self.question_label = QLabel(self)
@@ -27,7 +27,7 @@ class QuizWindow(QWidget):
         self.false_button.clicked.connect(lambda: self.check_answer(False))
 
         self.current_question = 0
-        self.correct_answers = 0  # Счетчик правильных ответов
+        self.correct_answers = 0
         self.questions = self.load_questions_from_database()
 
         if len(self.questions) == 0:
@@ -118,10 +118,8 @@ class QuizWindow(QWidget):
             self.correct_answers += 1
         else:
             QMessageBox.information(self, "Неправильно!", "Вы неправильно ответили!")
-
         self.current_question += 1
         self.show_question()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
